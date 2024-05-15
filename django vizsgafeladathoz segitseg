@@ -328,3 +328,20 @@ border: 1px solid black											//adunk egy keretet, hogy lássuk, hogy hol va
 
 --------------------------------------------------------------------------------------------------------
 
+30. a bekeretezett részbe kerülnek a fantasy Itemek amit az API-nk visszaad 127.0.0.1:8000/api/items/ végponton, melyeket kártyákban akarjuk ábrázolni, a frontend/src/components/ mappán belül létrehozunk egy ItemCard.js fájlt, mely a következőt tartalmazza:
+
+js fájloknál ha rafce szót beírjük legenerálja, melyet a következőre kell módosítani:
+
+import React from 'react'
+
+const ItemCard = () => {
+   return (
+     <div>
+	ItemCard
+     </div>
+   )
+}
+
+export default ItemCard
+
+--------------------------------------------------------------------------------------------------------
