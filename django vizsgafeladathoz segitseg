@@ -199,3 +199,47 @@ class ItemSerializers(ModelSerializer): /ami örököl a ModelSerializertől
 	model = Item
 	fields = '__all__'
 	depth = 1
+
+--------------------------------------------------------------------------------------------------------
+
+20. a backend a 8000-es porton a React-os alkalmazásunkat szolgálja, megoldás:
+a frontend mappába belekel lépni terminálban
+cd frontend/
+npm start
+npm run build
+code.							         // a frontend mappában létrehozza a build mappát, amiben van egy index html, és a go live ra kattintva a visual code-on belül
+
+--------------------------------------------------------------------------------------------------------
+
+21. a build mappát a django szolgáltassa nekünk 8000-es porton, melyet két helyen kell módosítain, melyet a backend/config mappán belül a settings.py-ban kell megtenni:
+
+1. Egyik módosítás
+TEMPLATES = [
+'DIR': [BASE_DIR / 'frontend/build/']				//mert ebben a mappában van az index.html
+
+]
+
+2. Mádosik módosítás a BASE_DIR-hez kapcsolódik, mert ez szolgáltatja mely a backend/static mappát szolgáltatja, de nekünk kell a frontend/build/static mappa is
+
+STATICFILES_DIRS = [
+    BASE_DIR /'Static'/,
+    BASE_DIR /'frontend//build/Static'/,
+]
+
+Egy viewt kell csinálni ami visszaadja a létrehozott oldalt, melyet a backend/config mappában az urls.py-ban kell megtenni
+
+from django.shortcuts import render
+
+def indexPage():
+    return render(request,'index.html')
+
+végpont
+
+urlpatterns = [
+    path('', indexPage, name=''index)
+
+Ha nem fut a server akkor python manage.oy runserver
+]
+
+--------------------------------------------------------------------------------------------------------
+
