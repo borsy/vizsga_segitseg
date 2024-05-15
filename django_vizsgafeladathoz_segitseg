@@ -389,7 +389,7 @@ const ItemSection = () => {
     const [items, setItems] = useState([])
 
     useEffect(()=>{															//useEffect(()=>{}): Lehetővé teszik számodra állapotok és más React funkciók használatát osztályok írása nélkül.
-	fetch(http://127.0.0.1:8000/api/items)
+	fetch('http://127.0.0.1:8000/api/items/')
 	.then(res => res.json())													//ha megjött az adat, akkor át kell alakítani
 	.then(data => console.log(data))												//az átalakított adatot logoljuk
     }, [])
@@ -420,7 +420,7 @@ const ItemSection = () => {
     const [items, setItems] = useState([])
 
     useEffect(()=>{
-	fetch(http://127.0.0.1:8000/api/items)
+	fetch('http://127.0.0.1:8000/api/items/')
 	.then(res => res.json())
 	.then(data => setItems(data))
     }, [])
@@ -457,4 +457,57 @@ const ItemCard = (props) => {
 	<p>{props.description}</p>																			//<p>, bekezdés, fegyver leírása
 	<strong>props.item_type.name</strong>																		//fegyver típusa
      </div>
+}
+
+
+Ezután sajnos nem tölti be még a fényképet mert az ItemSelcetion.js-ben a fetch urlt módosítani kell, módosított fájl:
+
+import React, {useState, useEffect} from 'react'
+import ItemCard from './ItemCard'
+
+const ItemSection = () => {
+
+    const [items, setItems] = useState([])
+
+    useEffect(()=>{
+	fetch('api/items/')
+	.then(res => res.json())
+	.then(data => setItems(data))
+    }, [])
+  return (
+    <section className = 'item-section'>
+        {items.map( (item, idx) => <ItemCard key={idx} {... item} />>)}			
+    </section>
+  )
+}
+
+Feth át írása után terminálba újra buildelni kell
+
+npm run build
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+37. A megjelenített képekhez csinálni kell css fájlt, hogy jobban nézzen ki, a frontend/src mappán belül az index.css fájlba .item-section classt módosítjuk a következőre:
+
+.item-section{
+  border: 1px solid black;
+  padding 10px;
+  grid-template-colums: repeat(4, 1fr);
+  gap: 20px;																			//sorköz távolság
+}
+
+.item-section>div{																		//item-section belüli div-ek kinézete
+  border: 1px solid black;
+  padding: 10px;
+  border-radius: 5px;																		//keret lekerekítése
+  display: flex;																		//középre igazítás
+  flex-direction: column;																	//egyes elemek egymás alatt legyenek, középen
+  justify-content: center;
+  align-items: center;
+  gap: 20px;																			//elemek közötti távolság
+}
+
+.item-section img{																		//képek formázása
+  width: 100%;																			//szélesség
+  max-width: 50vv;																		//maximális szélesség jelen esetben a képernyő 50%-a
 }
