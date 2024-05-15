@@ -12,13 +12,13 @@ django vizsgafeladathoz segitseg
 
 --------------------------------------------------------------------------------------------------------
 
-4. a képkezelő modult telepíteni kell a backend/frontend mappán belül							/valószínű telepítve lesz
+4. a képkezelő modult telepíteni kell a backend/frontend mappán belül										//valószínű telepítve lesz
 	
 	pip install pillow
 
 --------------------------------------------------------------------------------------------------------
 
-5. a djangorestframwork modult telepíteni kell a backend/frontend mappán belül						/valószínű telepítve lesz
+5. a djangorestframwork modult telepíteni kell a backend/frontend mappán belül									//valószínű telepítve lesz
 
 	pip install djangorestframework
 
@@ -107,9 +107,9 @@ Az Item types-on belül létre kell hozni ADD ITEM TYPE gomb segítségével, t�
 class Item(models.Model):
     name = models.CharField(max-length=255)
     item_type = models.ForeignKey(ItemType, on_delete = models.CASCADE)
-    description = models.TextField(null=True, blank=True) /úgy is létre lehet hozni a tárgyat, hogy nem adjuk 							meg a leírását, csak nevét meg a típusát adjuk meg.
-    image = models.ImageField(upload_to="static/images/") /kép feltöltés, de szükséges ehhez a pillow, upload 								rész hova töltjük fel
-    date = models.DateField(auto_now_add=True)		/mikor vettük meg a fegyvert, vagy vittük fel
+    description = models.TextField(null=True, blank=True) 								/úgy is létre lehet hozni a tárgyat, hogy nem adjuk meg a leírását, csak nevét meg a típusát adjuk meg.
+    image = models.ImageField(upload_to="static/images/") 								/kép feltöltés, de szükséges ehhez a pillow, upload rész hova töltjük fel
+    date = models.DateField(auto_now_add=True)										/mikor vettük meg a fegyvert, vagy vittük fel
 
     def __str__(self):
 	retun self.name
@@ -166,9 +166,9 @@ from .models import Item
 from rest_framework.response import Response
 
 @api_view{['GET']}
-DEF getAllItems(request):					//ha valaki ezt a függényt lefuttatja akkor kell ez az összes item		
+DEF getAllItems(request):												//ha valaki ezt a függényt lefuttatja akkor kell ez az összes item		
     items = Item.objects.all()
-    ser = ItemSerializer(item, many = True)			//json adatok átalakítása, ha több dolgot akarunk visszaadni akkor a many = True
+    ser = ItemSerializer(item, many = True)										//json adatok átalakítása, ha több dolgot akarunk visszaadni akkor a many = True
     return Respone(ser.data)
 
 
@@ -207,7 +207,7 @@ a frontend mappába belekel lépni terminálban
 cd frontend/
 npm start
 npm run build
-code.							         // a frontend mappában létrehozza a build mappát, amiben van egy index html, és a go live ra kattintva a visual code-on belül
+code.							         							//a frontend mappában létrehozza a build mappát, amiben van egy index html, és a go live ra kattintva a visual code-on belül
 
 --------------------------------------------------------------------------------------------------------
 
@@ -215,7 +215,7 @@ code.							         // a frontend mappában létrehozza a build mappát, amiben
 
 1. Egyik módosítás
 TEMPLATES = [
-'DIR': [BASE_DIR / 'frontend/build/']				//mert ebben a mappában van az index.html
+'DIR': [BASE_DIR / 'frontend/build/']											//mert ebben a mappában van az index.html
 
 ]
 
