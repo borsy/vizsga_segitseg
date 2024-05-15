@@ -1,0 +1,201 @@
+django vizsgafeladathoz segitseg
+
+1. myvenv django telepítése pip freeze
+
+--------------------------------------------------------------------------------------------------------
+
+2. új mappa létrehozása backend mappán belül frontend néven
+
+--------------------------------------------------------------------------------------------------------
+
+3. cd backend, cd frontend, npm start (kezdő react weboldal)
+
+--------------------------------------------------------------------------------------------------------
+
+4. a képkezelő modult telepíteni kell a backend/frontend mappán belül							/valószínű telepítve lesz
+	
+	pip install pillow
+
+--------------------------------------------------------------------------------------------------------
+
+5. a djangorestframwork modult telepíteni kell a backend/frontend mappán belül						/valószínű telepítve lesz
+
+	pip install djangorestframework
+
+--------------------------------------------------------------------------------------------------------
+
+6. a restframework-öt be kell inportalni a backend/config/settings.py fájlba az installed_apps = [ résznél
+
+	INSTALLED_APPS = [
+		'rest_framework'
+
+]
+
+--------------------------------------------------------------------------------------------------------
+
+7. a backend mappában csinálni kell egy alkalmazást python manage.py startapp fantasy (néven), 
+amikor létrejön akkor a backend mappán belül létrejön a fantasy mappa
+
+--------------------------------------------------------------------------------------------------------
+
+8. a létrejött fantasy mappába a fantasy-t be kell inportalni a backend/config/settings.py fájlba az installed_apps = [ résznél
+
+	INSTALLED_APPS = [
+		'fantasy'
+
+]
+
+--------------------------------------------------------------------------------------------------------
+
+9. el kell készíteni a backend mappában az adatbázist, amikor létrejön akkor egy db.sqlite3 fájl fog létre jönni
+
+	python manage.py migrate
+
+--------------------------------------------------------------------------------------------------------
+
+10. a létrejött adatbázishoz létre kell hozni egy admin felhasználót a backend mappán belül
+
+	python manage.py createsuperuser
+	Username: admin
+	Email adress: enter lenyomás
+	Password: admin
+
+--------------------------------------------------------------------------------------------------------
+
+11. a backend mappán belül el kell indítani a szervert, utána letudjuk tesztelni internet böngészőben a következő linken: https://127.0.0.1:8000/admin
+
+	python manage.py runserver
+
+--------------------------------------------------------------------------------------------------------
+
+12. a fantasy mappán belül a models.py ba létre kell hozni
+
+class ItemType(models.Model):
+    name = models.CharField(max-length=255)
+
+    def __srt()__self:
+	retun self. name
+
+class Item(models.Model):
+
+a backend mappában consolban ki kell adni a parancsot, ekkor láthatjuk milyen módosítás történt.
+
+python manage.py makemigrations
+
+utána
+
+python manage.py migrate
+
+végül
+
+python manage.py migrate
+
+ezzel még nem jelenik meg, mert a fantasy mappán belül az admin.py-ba létre kell hozni
+
+from .models import ItemType
+
+admin.stie.register(ItemType)
+
+Admin felületen látható hogy létrehozta az Item types.
+
+Az Item types-on belül létre kell hozni ADD ITEM TYPE gomb segítségével, több itemet.
+
+--------------------------------------------------------------------------------------------------------
+
+13. a fantasy mappán belül a models.py-ba tovább fejlesztjüks
+
+class Item(models.Model):
+    name = models.CharField(max-length=255)
+    item_type = models.ForeignKey(ItemType, on_delete = models.CASCADE)
+    description = models.TextField(null=True, blank=True) /úgy is létre lehet hozni a tárgyat, hogy nem adjuk 							meg a leírását, csak nevét meg a típusát adjuk meg.
+    image = models.ImageField(upload_to="static/images/") /kép feltöltés, de szükséges ehhez a pillow, upload 								rész hova töltjük fel
+    date = models.DateField(auto_now_add=True)		/mikor vettük meg a fegyvert, vagy vittük fel
+
+    def __str__(self):
+	retun self.name
+
+Utána a  python manage.py makemigrations-t le kell futtatni
+továbbá python manage.py migrate
+végül python manage.py runserver
+
+Az admin.py-ba szintén létre kell hozni
+
+from .models import ItemType, Item
+admin.stie.register(Item)
+
+Az admin felületen megjelenik az Items
+
+--------------------------------------------------------------------------------------------------------
+
+14. A text.txt-ben lévő adatokat kell felvinni új Itemként, ki kell választani a korábban létrehozott item type-ok közül a megfelelő, a további adatokat megfelelően ki kell tölteni. Mivel használunk képet így az első mentésnél létrejön egy static mappa amiben benne van a kép.
+
+--------------------------------------------------------------------------------------------------------
+
+15. A képeket megnézve a feltöltött admin felületen belül az items-nél akkor láthatjuk, az Image résznél a Currently-nél megjelenik a static/images.axe.jpg, ahol ha a linkre kattintunk megkéne hogy nyissa, statikus és média fájlként sem nem szolgáltatjuk
+Megoldás: a backend/config/settings.py be kell írni
+
+STATIC_URL = 'static/'
+
+STATICFILES DIRS = [
+    BASE DIR / 'static/'
+]
+
+Megjegyzés így minden feltöltött média meg fog jelenni.
+
+--------------------------------------------------------------------------------------------------------
+
+16. API létrehozása,a fantasy mappán belül létre kell hozni egy serializers.py mely tartalmazza:
+
+from rest_framework.serializers import ModelSerializer
+from .models import Item /mert ezeket akarjuk visszaadni
+
+class ItemSerializers(ModelSerializer): /ami örököl a ModelSerializertől
+    Class Meta:
+	model = Item
+	fields = '__all__'
+
+--------------------------------------------------------------------------------------------------------
+
+17. végponot kell létrehozni a fantasy mappán belül a views.py-ban
+
+Előtte törölni a benne lévő dolgokat
+
+from rest_framework.decorators import api_view
+from .serializers import ItemSerializer
+from .models import Item
+from rest_framework.response import Response
+
+@api_view{['GET']}
+DEF getAllItems(request):					//ha valaki ezt a függényt lefuttatja akkor kell ez az összes item		
+    items = Item.objects.all()
+    ser = ItemSerializer(item, many = True)			//json adatok átalakítása, ha több dolgot akarunk visszaadni akkor a many = True
+    return Respone(ser.data)
+
+
+--------------------------------------------------------------------------------------------------------
+
+
+18. URL lekérésének beállítása a config mappán belül az urls.py-ban kell megtenni
+
+
+from django.contrib import admin
+from django.urls import path
+from fantasy import views
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/items/', views.getAllItems)
+]
+
+--------------------------------------------------------------------------------------------------------
+
+19. getApi lekérés megtekintésénél az item_tpye-nál 1-et ír, melyet szeretnék majd kiíratni frontend-es oldalunkon, ezért létre kell hozni a nevét, melyet a fantasy mappán belül a serializers.py-ban kell megtenni.
+
+from rest_framework.serializers import ModelSerializer
+from .models import Item /mert ezeket akarjuk visszaadni
+
+class ItemSerializers(ModelSerializer): /ami örököl a ModelSerializertől
+    Class Meta:
+	model = Item
+	fields = '__all__'
+	depth = 1
