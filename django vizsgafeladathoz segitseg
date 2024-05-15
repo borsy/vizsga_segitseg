@@ -442,3 +442,19 @@ const ItemCard = (props) => {
 }
 
 export default ItemCard
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+36. Meg kell jeleníteni különböző dolgokat, ajánlott nézni az API-t, mert ebből lehet mindent kiolvasni, tehát a props, tekintsük egy dolognak, azonbülül kitudjuk szedni a megfelelő adatokat. Az ItemCard.js fájl a következő lesz:
+
+import React from 'react'
+
+const ItemCard = (props) => {
+   return
+     <div>
+	<img src={props.image} />																			//fegyver kép megjelenítése
+	<h2>{props.name}</h2>
+	<p>{props.description}</p>																			//<p>, bekezdés, fegyver leírása
+	<strong>props.item_type.name</strong>																		//fegyver típusa
+     </div>
+}
