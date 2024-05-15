@@ -243,3 +243,44 @@ Ha nem fut a server akkor python manage.oy runserver
 
 --------------------------------------------------------------------------------------------------------
 
+22.  a terminálban a frontend mappába be kell léni
+
+npm start
+
+--------------------------------------------------------------------------------------------------------
+
+23. a frontend mappán belül a következő fájlokat kell törölni
+
+App.test.js
+reportWebVitals.js
+setupTest.js
+App.css
+logo.svg
+
+--------------------------------------------------------------------------------------------------------
+
+24. a frontend mappán belül az index.js a következő nem kell
+
+import reportWebVitals from './reportWebVitals,;
+
+--------------------------------------------------------------------------------------------------------
+
+25. a frontend mappáb belül az App.js fájlban lévő dokgok törlése, és a következőt kell írni
+
+import React from 'react'
+
+const App = () => {
+   return (
+     <div>Aoo</div>
+   )
+}
+
+export default App
+
+--------------------------------------------------------------------------------------------------------
+
+26. le kell buildelni, terminálba a következőt kell írni
+
+npm run build
+
+
