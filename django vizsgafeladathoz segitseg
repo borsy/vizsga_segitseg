@@ -390,6 +390,8 @@ const ItemSection = () => {
 
     useEffect(()=>{															//useEffect(()=>{}): Lehetővé teszik számodra állapotok és más React funkciók használatát osztályok írása nélkül.
 	fetch(http://127.0.0.1:8000/api/items)
+	.then(res => res.json())													//ha megjött az adat, akkor át kell alakítani
+	.then(data => console.log(data))												//az átalakított adatot logoljuk
     }, [])
   return (
     <section className = 'item-section'>
