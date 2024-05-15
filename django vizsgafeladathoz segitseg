@@ -283,4 +283,48 @@ export default App
 
 npm run build
 
+--------------------------------------------------------------------------------------------------------
+
+27. Itemek kirendelése, melyet a frontend/src mappán belül a létrehozott components mappán belül lesznek az oldal felépítéséhez szükséges komponensek, melyen belül ItemSection.js fájlt kell létrehozni, melybe a következőket írjuk
+
+App.js fájlban be kell importálni az ItemSection
+
+import React from 'react'
+import ItemSection from './components/ItemSection'
+
+const App = () => {
+   return (
+     <div>
+	<ItemSection/>
+     </div>
+   )
+}
+
+export default App
+
+--------------------------------------------------------------------------------------------------------
+
+28. ItemSection.js fájlban a következő soroknak kell lenni:
+
+import React from 'react'
+
+const ItemSection = () => {
+   return (
+     <section classname = 'item-section'>
+	<ItemSection/>
+     </section>
+   )
+}
+
+export default ItemSection
+
+--------------------------------------------------------------------------------------------------------
+
+29. az index.css-ben fel kell venni az 'item-section' classt
+
+.item-section{
+border: 1px solid black											//adunk egy keretet, hogy lássuk, hogy hol van
+}
+
+--------------------------------------------------------------------------------------------------------
 
