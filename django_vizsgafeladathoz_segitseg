@@ -494,6 +494,8 @@ npm run build
   padding 10px;
   grid-template-colums: repeat(4, 1fr);
   gap: 20px;																			//sorköz távolság
+  max-width: 1000px;																		//maximum 1000px szélesség lehet
+  margin: auto;
 }
 
 .item-section>div{																		//item-section belüli div-ek kinézete
@@ -510,4 +512,20 @@ npm run build
 .item-section img{																		//képek formázása
   width: 100%;																			//szélesség
   max-width: 50vv;																		//maximális szélesség jelen esetben a képernyő 50%-a
+}
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+38. a megjelenített tartalom responsivitásának beállítása, hogy mobilon is jól nézzen ki, a frontend/src mappán belül az index.css fájlban a következőket kell beilleszteni:
+
+@media onyl screen and (min-width: 500px) {															//500px felett vog érvényesülni ez a beállítás
+  .item-section{
+     grid-template-colum: repeat(2, 1fr);															//2 oszlopban jelennek meg
+  }
+}
+
+@media onyl screen and (min-width: 800px) {															//ha a 800pxt eléri akkor érvényesüljön
+  .item-section{
+     grid-template-colum: repeat(2, 1fr);															//4 oszlopban jelennek meg
+  }
 }
