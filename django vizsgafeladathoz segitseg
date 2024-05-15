@@ -363,7 +363,9 @@ const ItemSection = () => {
 
 export default ItemSection
 
-az index.css-ben az .item-section classt kibővítjük padding-el
+--------------------------------------------------------------------------------------------------------
+
+32. az index.css-ben az .item-section classt kibővítjük padding-el
 
 .item-section{
   border: 1px solid black;
@@ -375,3 +377,25 @@ body{
  padding: 20px;
 }
 }
+
+--------------------------------------------------------------------------------------------------------
+
+33. le kell kérni az egyes elemeket az ItemSection.js fájlban, megoldás:
+
+import React, {useState, useEffect} from 'react'
+
+const ItemSection = () => {
+
+    const [items, setItems] = useState([])
+
+    useEffect(()=>{															//useEffect(()=>{}): Lehetővé teszik számodra állapotok és más React funkciók használatát osztályok írása nélkül.
+	fetch(http://127.0.0.1:8000/api/items)
+    }, [])
+  return (
+    <section className = 'item-section'>
+        {/*IDE JÖNNEK MAJD A KÁRTYÁK*/}
+    </section>
+  )
+}
+
+export default ItemSection
