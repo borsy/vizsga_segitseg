@@ -345,3 +345,33 @@ const ItemCard = () => {
 export default ItemCard
 
 --------------------------------------------------------------------------------------------------------
+
+31. Fetch-elni kell az API végpontot, melyet az ItemSections.js fájlban fogjuk megoldani
+
+import React, {useState, useEffect} from 'react'										//useState (állapotot fog ábrázolni), useEffect (ami ügyelni fog csak az oldal első betöltésekor fetchel-je meg a végpontot)
+
+const ItemSection = () => {
+
+    const [items, setItems] = useState([])
+  
+  return (
+    <section className = 'item-section'>
+        {/*IDE JÖNNEK MAJD A KÁRTYÁK*/}
+    </section>
+  )
+}
+
+export default ItemSection
+
+az index.css-ben az .item-section classt kibővítjük padding-el
+
+.item-section{
+  border: 1px solid black;
+  padding: 10px;
+
+a body claast is ki kell egészíteni padding-el
+
+body{
+ padding: 20px;
+}
+}
