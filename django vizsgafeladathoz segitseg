@@ -407,3 +407,38 @@ export default ItemSection
 34. a böngészőbe amikor be akarjuk tölteni localhost:3000 oldalt akkor hibára fog futni, megoldás: böngészőbe a következő bővítményt telepíteni kell:
 
 CORS Everywhere bővitményt														//utána már átjönnek az adatok
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+35.  kártyák létrehozása az ItemSections.js fájlban:
+
+import React, {useState, useEffect} from 'react'
+import ItemCard from './ItemCard'
+
+const ItemSection = () => {
+
+    const [items, setItems] = useState([])
+
+    useEffect(()=>{
+	fetch(http://127.0.0.1:8000/api/items)
+	.then(res => res.json())
+	.then(data => setItems(data))
+    }, [])
+  return (
+    <section className = 'item-section'>
+        {items.map( item => <ItemCard {... item} />>)}			//mappelés, ez függvény, olyan mint a foreach				//{... item}, a props-on belül lesznek a dolgok
+    </section>
+  )
+}
+
+Az ItemCard.js fájlban props-ot kell létrenihoni, azaz módosítjuk a ItemCard.js fájlt a következőre:
+
+import React from 'react'
+
+const ItemCard = (props) => {
+   return (
+     <div>{props.name}</div>
+   )
+}
+
+export default ItemCard
