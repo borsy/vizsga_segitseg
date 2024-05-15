@@ -426,7 +426,7 @@ const ItemSection = () => {
     }, [])
   return (
     <section className = 'item-section'>
-        {items.map( item => <ItemCard {... item} />>)}			//mappelés, ez függvény, olyan mint a foreach				//{... item}, a props-on belül lesznek a dolgok
+        {items.map( (item, idx) => <ItemCard key={idx} {... item} />>)}			//mappelés, ez függvény, olyan mint a foreach				//{... item}, a props-on belül lesznek a dolgok
     </section>
   )
 }
