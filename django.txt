@@ -1,0 +1,413 @@
+django vizsgafeladathoz segitseg
+
+1. myvenv django telepítése pip freeze
+2. új mappa létrehozása backend mappán belül frontend néven
+3. cd backend, cd frontend, npm start (kezdő react weboldal)
+4. a képkezelő modult telepíteni kell a backend/frontend mappán belül										//valószínű telepítve lesz
+	
+	pip install pillow
+5. a djangorestframwork modult telepíteni kell a backend/frontend mappán belül									//valószínű telepítve lesz
+
+	pip install djangorestframework
+6. a restframework-öt be kell inportalni a backend/config/settings.py fájlba az installed_apps = [ résznél
+
+	INSTALLED_APPS = [
+		'rest_framework'
+
+]
+7. a backend mappában csinálni kell egy alkalmazást python manage.py startapp fantasy (néven), 
+amikor létrejön akkor a backend mappán belül létrejön a fantasy mappa
+
+8. a létrejött fantasy mappába a fantasy-t be kell inportalni a backend/config/settings.py fájlba az installed_apps = [ résznél
+
+	INSTALLED_APPS = [
+		'fantasy'
+
+]
+9. el kell készíteni a backend mappában az adatbázist, amikor létrejön akkor egy db.sqlite3 fájl fog létre jönni
+
+	python manage.py migrate
+10. a létrejött adatbázishoz létre kell hozni egy admin felhasználót a backend mappán belül
+
+	python manage.py createsuperuser
+	Username: admin
+	Email adress: enter lenyomás
+	Password: admin
+
+11. a backend mappán belül el kell indítani a szervert, utána letudjuk tesztelni internet böngészőben a következő linken: https://127.0.0.1:8000/admin
+
+	python manage.py runserver
+12. a fantasy mappán belül a models.py ba létre kell hozni
+
+class ItemType(models.Model):
+    name = models.CharField(max-length=255)
+
+    def __srt()__self:
+	retun self. name
+
+class Item(models.Model):
+
+a backend mappában consolban ki kell adni a parancsot, ekkor láthatjuk milyen módosítás történt.
+
+python manage.py makemigrations
+
+utána
+
+python manage.py migrate
+
+végül
+
+python manage.py migrate
+
+ezzel még nem jelenik meg, mert a fantasy mappán belül az admin.py-ba létre kell hozni
+
+from .models import ItemType
+
+admin.stie.register(ItemType)
+
+Admin felületen látható hogy létrehozta az Item types.
+
+Az Item types-on belül létre kell hozni ADD ITEM TYPE gomb segítségével, több itemet.
+
+13. a fantasy mappán belül a models.py-ba tovább fejlesztjüks
+
+class Item(models.Model):
+    name = models.CharField(max-length=255)
+    item_type = models.ForeignKey(ItemType, on_delete = models.CASCADE)
+    description = models.TextField(null=True, blank=True) 		//úgy is létre lehet hozni a tárgyat, hogy nem adjuk meg a leírását, csak nevét meg a típusát adjuk meg.
+    image = models.ImageField(upload_to="static/images/") 		//kép feltöltés, de szükséges ehhez a pillow, upload rész hova töltjük fel
+    date = models.DateField(auto_now_add=True)										/mikor vettük meg a fegyvert, vagy vittük fel
+
+    def __str__(self):
+	retun self.name
+
+Utána a  python manage.py makemigrations-t le kell futtatni
+továbbá python manage.py migrate
+végül python manage.py runserver
+
+Az admin.py-ba szintén létre kell hozni
+
+from .models import ItemType, Item
+admin.stie.register(Item)
+
+Az admin felületen megjelenik az Items
+14. A text.txt-ben lévő adatokat kell felvinni új Itemként, ki kell választani a korábban létrehozott item type-ok közül a megfelelő, a további adatokat megfelelően ki kell tölteni. Mivel használunk képet így az első mentésnél létrejön egy static mappa amiben benne van a kép.
+15. A képeket megnézve a feltöltött admin felületen belül az items-nél akkor láthatjuk, az Image résznél a Currently-nél megjelenik a static/images.axe.jpg, ahol ha a linkre kattintunk megkéne hogy nyissa, statikus és média fájlként sem nem szolgáltatjuk
+Megoldás: a backend/config/settings.py be kell írni
+
+STATIC_URL = 'static/'
+
+STATICFILES DIRS = [
+    BASE DIR / 'static/'
+]
+
+Megjegyzés így minden feltöltött média meg fog jelenni.
+ 
+16. API létrehozása,a fantasy mappán belül létre kell hozni egy serializers.py mely tartalmazza:
+
+from rest_framework.serializers import ModelSerializer
+from .models import Item /mert ezeket akarjuk visszaadni
+
+class ItemSerializers(ModelSerializer): 		//ami örököl a ModelSerializertől
+    Class Meta:
+	model = Item
+	fields = '__all__'
+17. végponot kell létrehozni a fantasy mappán belül a views.py-ban
+
+Előtte törölni a benne lévő dolgokat
+
+from rest_framework.decorators import api_view
+from .serializers import ItemSerializer
+from .models import Item
+from rest_framework.response import Response
+
+@api_view{['GET']}
+DEF getAllItems(request):			//ha valaki ezt a függényt lefuttatja akkor kell ez az összes item		
+    items = Item.objects.all()
+    ser = ItemSerializer(item, many = True)		//json adatok átalakítása, ha több dolgot akarunk visszaadni akkor a many = True
+    return Respone(ser.data)
+18. URL lekérésének beállítása a config mappán belül az urls.py-ban kell megtenni
+from django.contrib import admin
+from django.urls import path
+from fantasy import views
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/items/', views.getAllItems)
+]
+19. getApi lekérés megtekintésénél az item_tpye-nál 1-et ír, melyet szeretnék majd kiíratni frontend-es oldalunkon, ezért létre kell hozni a nevét, melyet a fantasy mappán belül a serializers.py-ban kell megtenni.
+
+from rest_framework.serializers import ModelSerializer
+from .models import Item /mert ezeket akarjuk visszaadni
+
+class ItemSerializers(ModelSerializer): 			//ami örököl a ModelSerializertől
+    Class Meta:
+	model = Item
+	fields = '__all__'
+	depth = 1
+20. a backend a 8000-es porton a React-os alkalmazásunkat szolgálja, megoldás:
+a frontend mappába belekel lépni terminálban
+cd frontend/
+npm start
+npm run build
+code.	//a frontend mappában létrehozza a build mappát, amiben van egy index html, és a go live ra kattintva a visual code-on belül
+21. a build mappát a django szolgáltassa nekünk 8000-es porton, melyet két helyen kell módosítain, melyet a backend/config mappán belül a settings.py-ban kell megtenni:
+1. Egyik módosítás
+TEMPLATES = [
+'DIR': [BASE_DIR / 'frontend/build/'		//mert ebben a mappában van az index.html
+]
+
+2. Mádosik módosítás a BASE_DIR-hez kapcsolódik, mert ez szolgáltatja mely a backend/static mappát szolgáltatja, de nekünk kell a frontend/build/static mappa is
+STATICFILES_DIRS = [
+    BASE_DIR /'Static'/,
+    BASE_DIR /'frontend//build/Static'/,
+]
+
+Egy viewt kell csinálni ami visszaadja a létrehozott oldalt, melyet a backend/config mappában az urls.py-ban kell megtenni
+
+from django.shortcuts import render
+
+def indexPage(request):
+    return render(request,'index.html')
+
+végpont
+
+urlpatterns = [
+    path('', indexPage, name='index')
+
+Ha nem fut a server akkor python manage.oy runserver
+]
+22.  a terminálban a frontend mappába be kell léni
+
+npm start
+23. a frontend/src mappán belül a következő fájlokat kell törölni
+App.test.js
+reportWebVitals.js
+setupTest.js
+App.css
+logo.svg
+24. a frontend/src mappán belül az index.js a következő nem kell
+import reportWebVitals from './reportWebVitals,;
+reportWebVitals();
+25. a frontend/src mappáb belül az App.js fájlban lévő dokgok törlése, és a következőt kell írni
+import React from 'react'
+const App = () => {
+   return (
+   <div>App</div>
+   )
+}
+export default App
+26. le kell buildelni, terminálba a következőt kell írni
+npm run build
+27. Itemek kirendelése, melyet a frontend/src mappán belül a létrehozott components mappán belül lesznek az oldal felépítéséhez szükséges komponensek, melyen belül ItemSection.js fájlt kell létrehozni, melybe a következőket írjuk
+
+App.js fájlban be kell importálni az ItemSection
+
+import React from 'react'
+import ItemSection from './components/ItemSection'
+
+const App = () => {
+   return (
+     <div>
+	<ItemSection/>
+     </div>
+   )
+}
+
+export default App
+ 
+28. ItemSection.js fájlban a következő soroknak kell lenni:
+
+import React from 'react'
+
+const ItemSection = () => {
+   return (
+     <section classname = 'item-section'>
+	<ItemSection/>
+     </section>
+   )
+}
+
+export default ItemSection
+29. az index.css-ben fel kell venni az 'item-section' classt
+
+.item-section{
+border: 1px solid black					//adunk egy keretet, hogy lássuk, hogy hol van
+}
+30. a bekeretezett részbe kerülnek a fantasy Itemek amit az API-nk visszaad 127.0.0.1:8000/api/items/ végponton, melyeket kártyákban akarjuk ábrázolni, a frontend/src/components/ mappán belül létrehozunk egy ItemCard.js fájlt, mely a következőt tartalmazza:
+
+js fájloknál ha rafce szót beírjük legenerálja, melyet a következőre kell módosítani:
+
+import React from 'react'
+
+const ItemCard = () => {
+   return (
+     <div>
+	ItemCard
+     </div>
+   )
+}
+
+export default ItemCard
+31. Fetch-elni kell az API végpontot, melyet az ItemSections.js fájlban fogjuk megoldani
+
+import React, {useState, useEffect} from 'react'	//useState (állapotot fog ábrázolni), useEffect (ami ügyelni fog csak az oldal első betöltésekor fetchel-je meg a végpontot)
+const ItemSection = () => {
+
+    const [items, setItems] = useState([])
+  
+  return (
+    <section className = 'item-section'>
+        {/*IDE JÖNNEK MAJD A KÁRTYÁK*/}
+    </section>
+  )
+}
+
+export default ItemSection
+32. az index.css-ben az .item-section classt kibővítjük padding-el
+
+.item-section{
+  border: 1px solid black;
+  padding: 10px;
+
+a body claast is ki kell egészíteni padding-el
+
+body{
+ padding: 20px;
+}
+}
+33. le kell kérni az egyes elemeket az ItemSection.js fájlban, megoldás:
+
+import React, {useState, useEffect} from 'react'
+
+const ItemSection = () => {
+
+    const [items, setItems] = useState([])
+
+    useEffect(()=>{	//useEffect(()=>{}): Lehetővé teszik számodra állapotok és más React funkciók használatát osztályok írása nélkül.
+	fetch('http://127.0.0.1:8000/api/items/')
+	.then(res => res.json())		//ha megjött az adat, akkor át kell alakítani
+	.then(data => console.log(data))	//az átalakított adatot logoljuk
+    }, [])
+  return (
+    <section className = 'item-section'>
+        {/*IDE JÖNNEK MAJD A KÁRTYÁK*/}
+    </section>
+  )
+}
+
+export default ItemSection
+34. a böngészőbe amikor be akarjuk tölteni localhost:3000 oldalt akkor hibára fog futni, megoldás: böngészőbe a következő bővítményt telepíteni kell:
+
+CORS Everywhere bővitményt						//utána már átjönnek az adatok
+35.  kártyák létrehozása az ItemSections.js fájlban:
+
+import React, {useState, useEffect} from 'react'
+import ItemCard from './ItemCard'
+
+const ItemSection = () => {
+
+    const [items, setItems] = useState([])
+
+    useEffect(()=>{
+	fetch('http://127.0.0.1:8000/api/items/')
+	.then(res => res.json())
+	.then(data => setItems(data))
+    }, [])
+  return (
+    <section className = 'item-section'>
+        {items.map( (item, idx) => <ItemCard key={idx} {... item} />)}		//mappelés, ez függvény, olyan mint a foreach						//{... item}, a props-on belül lesznek a dolgok
+    </section>
+  )
+}
+
+Az ItemCard.js fájlban props-ot kell létrenihoni, azaz módosítjuk a ItemCard.js fájlt a következőre:
+
+import React from 'react'
+
+const ItemCard = (props) => {
+   return (
+     <div>{props.name}</div>
+   )
+}
+
+export default ItemCard
+ 
+36. Meg kell jeleníteni különböző dolgokat, ajánlott nézni az API-t, mert ebből lehet mindent kiolvasni, tehát a props, tekintsük egy dolognak, azonbülül kitudjuk szedni a megfelelő adatokat. Az ItemCard.js fájl a következő lesz:
+
+import React from 'react'
+
+const ItemCard = (props) => {
+   return
+     <div>
+	<img src={props.image} />				//fegyver kép megjelenítése
+	<h2>{props.name}</h2>
+	<p>{props.description}</p>				//<p>, bekezdés, fegyver leírása
+	<strong>props.item_type.name</strong>			//fegyver típusa
+     </div>
+}
+
+
+Ezután sajnos nem tölti be még a fényképet mert az ItemSelcetion.js-ben a fetch urlt módosítani kell, módosított fájl:
+
+import React, {useState, useEffect} from 'react'
+import ItemCard from './ItemCard'
+
+const ItemSection = () => {
+
+    const [items, setItems] = useState([])
+
+    useEffect(()=>{
+	fetch('api/items/')
+	.then(res => res.json())
+	.then(data => setItems(data))
+    }, [])
+  return (
+    <section className = 'item-section'>
+        {items.map( (item, idx) => <ItemCard key={idx} {... item} />>)}			
+    </section>
+  )
+}
+
+Feth át írása után terminálba újra buildelni kell
+
+npm run build
+37. A megjelenített képekhez csinálni kell css fájlt, hogy jobban nézzen ki, a frontend/src mappán belül az index.css fájlba .item-section classt módosítjuk a következőre:
+
+.item-section{
+  padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 20px;						//sorköz távolság
+  max-width: 1000px;					//maximum 1000px szélesség lehet
+  margin: auto;
+}
+
+.item-section>div{					//item-section belüli div-ek kinézete
+  border: 1px solid black;
+  padding: 10px;
+  border-radius: 5px;					//keret lekerekítése
+  display: flex;					//középre igazítás
+  flex-direction: column;					//egyes elemek egymás alatt legyenek, középen
+  justify-content: center;
+  align-items: center;
+  gap: 20px;						//elemek közötti távolság
+}
+
+.item-section img{					//képek formázása
+  width: 100%;						//szélesség
+  max-width: 50vw;					//maximális szélesség jelen esetben a képernyő 50%-a
+}
+38. a megjelenített tartalom responsivitásának beállítása, hogy mobilon is jól nézzen ki, a frontend/src mappán belül az index.css fájlban a következőket kell beilleszteni:
+
+@media only screen and (min-width: 500px){				//500px felett vog érvényesülni ez a beállítás
+  .item-section{
+     grid-template-columns: repeat(2, 1fr);				//2 oszlopban jelennek meg
+  }
+}
+
+@media only screen and (min-width: 800px) {				//ha a 800pxt eléri akkor érvényesüljön
+  .item-section{
+     grid-template-columns: repeat(4, 1fr);				//4 oszlopban jelennek meg
+  }
+}
